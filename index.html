@@ -4,54 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulasi dan Jadwal Overtime</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Custom Scrollbar for tables */
-        .overflow-x-auto::-webkit-scrollbar {
-            height: 8px;
-        }
-        .overflow-x-auto::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .overflow-x-auto::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        .sticky-col-1 {
-            position: sticky;
-            left: 0;
-            z-index: 20;
-        }
-        .sticky-col-2 {
-            position: sticky;
-            left: 50px;
-            z-index: 20;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .overflow-x-auto::-webkit-scrollbar { height: 8px; }
+        .overflow-x-auto::-webkit-scrollbar-track { background: #f1f5f9; }
+        .overflow-x-auto::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .sticky-col-1 { position: sticky; left: 0; z-index: 20; }
+        .sticky-col-2 { position: sticky; left: 50px; z-index: 20; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen">
 
-    <!-- Toast Notification Container -->
+    <!-- Toast -->
     <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700">
         <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
         <span id="toastMsg" class="text-sm font-medium">Berhasil disimpan</span>
     </div>
 
-    <!-- Main Container -->
     <div class="max-w-[1600px] mx-auto p-3 sm:p-6 space-y-6">
-        
-        <!-- Header & Nav -->
+
+        <!-- Header -->
         <header class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="h-12 px-3 bg-white border border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
@@ -66,9 +42,8 @@
                 </div>
             </div>
 
-            <!-- Global Actions -->
             <div class="flex flex-wrap items-center gap-2">
-                <button onclick="loadDataFromCloud()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-2 shadow-sm">
+                <button onclick="loadDataFromCloud(true)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-rotate text-red-600"></i> Refresh Data
                 </button>
                 <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-2 shadow-sm">
@@ -80,22 +55,17 @@
             </div>
         </header>
 
-        <!-- Controls Section -->
+        <!-- Controls -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sm:p-5 space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                
-                <!-- Periode Selector -->
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Pilih Cut Off Periode</label>
                     <div class="relative">
-                        <select id="periodeSelect" onchange="changePeriode(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 px-3 pr-8 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white appearance-none">
-                            <!-- Populated dynamically -->
-                        </select>
+                        <select id="periodeSelect" onchange="changePeriode(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 px-3 pr-8 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white appearance-none"></select>
                         <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-xs text-slate-400 pointer-events-none"></i>
                     </div>
                 </div>
 
-                <!-- Shift Filter -->
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Filter Shift</label>
                     <div class="relative">
@@ -110,7 +80,6 @@
                     </div>
                 </div>
 
-                <!-- Group Filter -->
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Filter Grup</label>
                     <div class="relative">
@@ -120,6 +89,7 @@
                             <option value="B">Grup B</option>
                             <option value="C">Grup C</option>
                             <option value="D">Grup D</option>
+                            <option value="E">Grup E</option>
                             <option value="FL">Grup FL</option>
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-xs text-slate-400 pointer-events-none"></i>
@@ -127,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- Search & Actions -->
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
                 <div class="relative w-full sm:w-72">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
@@ -135,7 +104,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-                    <button onclick="toggleAutoSort()" id="autoSortBtn" class="px-3.5 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 rounded-xl text-xs font-medium transition flex items-center gap-2">
+                    <button onclick="toggleAutoSort()" id="autoSortBtn" class="px-3.5 py-2 bg-emerald-50 border-emerald-300 text-slate-700 hover:bg-slate-200 border rounded-xl text-xs font-medium transition flex items-center gap-2">
                         <i class="fa-solid fa-arrow-down-wide-short text-emerald-600"></i>
                         <span>Urutkan Total Jam: <strong id="sortStatusText">Aktif</strong></span>
                     </button>
@@ -146,16 +115,13 @@
             </div>
         </div>
 
-        <!-- Category Tables Section -->
-        <div id="tablesContainer" class="space-y-6">
-            <!-- Table categories populated dynamically (Leader, Grup, Part Control) -->
-        </div>
+        <div id="tablesContainer" class="space-y-6"></div>
     </div>
 
-    <!-- Modal Input Jam OT Harian -->
+    <!-- Modal Input Jam OT -->
     <div id="otModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-slate-100">
-            <div class="bg-slate-800 text-white p-4.5 flex justify-between items-center">
+            <div class="bg-slate-800 text-white p-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-clock text-emerald-400"></i>
                     <h3 class="font-bold text-base sm:text-lg" id="modalTitle">Input Jam Overtime</h3>
@@ -171,7 +137,6 @@
                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Karyawan</label>
                         <input type="text" id="modalEmpName" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none">
                     </div>
-
                     <div>
                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal</label>
                         <input type="text" id="modalDateLabel" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none">
@@ -182,39 +147,28 @@
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Pilih Opsi Overtime</label>
                     <input type="hidden" id="modalOtHours" value="0">
                     <input type="hidden" id="modalNote" value="">
-                    
+
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                        <!-- 3 Awal: Emerald Green -->
                         <button type="button" onclick="selectOTPreset(3, '3 Awal')" class="ot-preset-btn p-3 rounded-xl border-2 border-emerald-400 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="3 Awal">
                             <span class="text-sm sm:text-base font-extrabold text-emerald-800">3 Awal</span>
                             <span class="text-[10px] text-emerald-700 font-bold">3 Jam (Hijau)</span>
                         </button>
-
-                        <!-- 3 Akhir: Amber / Orange (High Contrast vs Green) -->
                         <button type="button" onclick="selectOTPreset(3, '3 Akhir')" class="ot-preset-btn p-3 rounded-xl border-2 border-amber-400 bg-amber-100 hover:bg-amber-200 text-amber-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="3 Akhir">
                             <span class="text-sm sm:text-base font-extrabold text-amber-800">3 Akhir</span>
                             <span class="text-[10px] text-amber-700 font-bold">3 Jam (Oranye)</span>
                         </button>
-
-                        <!-- 7 S1: Indigo/Purple -->
                         <button type="button" onclick="selectOTPreset(7, '7 S1')" class="ot-preset-btn p-3 rounded-xl border-2 border-indigo-400 bg-indigo-100 hover:bg-indigo-200 text-indigo-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S1">
                             <span class="text-sm sm:text-base font-extrabold text-indigo-800">7 S1</span>
                             <span class="text-[10px] text-indigo-700 font-bold">7 Jam (Ungu)</span>
                         </button>
-
-                        <!-- 7 S2: Violet / Pink -->
                         <button type="button" onclick="selectOTPreset(7, '7 S2')" class="ot-preset-btn p-3 rounded-xl border-2 border-fuchsia-400 bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S2">
                             <span class="text-sm sm:text-base font-extrabold text-fuchsia-800">7 S2</span>
                             <span class="text-[10px] text-fuchsia-700 font-bold">7 Jam (Pink)</span>
                         </button>
-
-                        <!-- 7 S3: Rose/Red -->
                         <button type="button" onclick="selectOTPreset(7, '7 S3')" class="ot-preset-btn p-3 rounded-xl border-2 border-rose-400 bg-rose-100 hover:bg-rose-200 text-rose-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S3">
                             <span class="text-sm sm:text-base font-extrabold text-rose-800">7 S3</span>
                             <span class="text-[10px] text-rose-700 font-bold">7 Jam (Merah)</span>
                         </button>
-
-                        <!-- 1 Jam: Sky/Blue -->
                         <button type="button" onclick="selectOTPreset(1, '1')" class="ot-preset-btn p-3 rounded-xl border-2 border-sky-400 bg-sky-100 hover:bg-sky-200 text-sky-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="1">
                             <span class="text-sm sm:text-base font-extrabold text-sky-800">1</span>
                             <span class="text-[10px] text-sky-700 font-bold">1 Jam (Biru)</span>
@@ -236,10 +190,10 @@
         </div>
     </div>
 
-    <!-- Modal Tambah/Edit Karyawan -->
+    <!-- Modal Karyawan -->
     <div id="empModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-slate-100">
-            <div class="bg-slate-800 text-white p-4.5 flex justify-between items-center">
+            <div class="bg-slate-800 text-white p-4 flex justify-between items-center">
                 <h3 class="font-bold text-base sm:text-lg" id="empModalTitle">Tambah Karyawan Baru</h3>
                 <button onclick="closeEmpModal()" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
             </div>
@@ -270,7 +224,6 @@
                             <option value="NS">NS</option>
                         </select>
                     </div>
-
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Grup</label>
                         <select id="empGroupInput" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
@@ -278,6 +231,7 @@
                             <option value="B">Grup B</option>
                             <option value="C">Grup C</option>
                             <option value="D">Grup D</option>
+                            <option value="E">Grup E</option>
                             <option value="FL">Grup FL</option>
                         </select>
                     </div>
@@ -291,10 +245,10 @@
         </div>
     </div>
 
-    <!-- Modal Kelola Periode -->
+    <!-- Modal Periode -->
     <div id="periodeModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-slate-100">
-            <div class="bg-slate-800 text-white p-4.5 flex justify-between items-center">
+            <div class="bg-slate-800 text-white p-4 flex justify-between items-center">
                 <h3 class="font-bold text-base sm:text-lg">Kelola Cut Off Periode</h3>
                 <button onclick="closePeriodeModal()" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
             </div>
@@ -303,19 +257,16 @@
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Nama Periode</label>
                     <input type="text" id="periodeNameInput" placeholder="Contoh: CUT OFF DESEMBER 2026" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
                 </div>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tanggal Mulai</label>
                         <input type="date" id="periodeStartDateInput" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
                     </div>
-
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tanggal Akhir</label>
                         <input type="date" id="periodeEndDateInput" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
                     </div>
                 </div>
-
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
                     <button type="button" onclick="closePeriodeModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-xl text-xs sm:text-sm font-semibold hover:bg-slate-50 transition">Batal</button>
                     <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition shadow-md">Tambah Periode</button>
@@ -326,20 +277,18 @@
 
     <footer class="px-3 py-6 text-center text-xs text-slate-500">powered by NWBC</footer>
 
-    <!-- JavaScript Application Logic -->
     <script>
-        // Google Apps Script Backend URL
+        // =====================================================
+        // KONFIGURASI
+        // =====================================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTCKf-Bg5WgGxoX309gzFSf-YEWb2oxm-XCVQ_YvP8oNu8h-G9BhzQcSvrk71Mh3MsdA/exec";
+        const POLL_INTERVAL_MS = 5000; // cek perubahan dari user lain tiap 5 detik
 
-        // Global State Variables
-        let periodes = [
+        // Data contoh: HANYA dipakai untuk mengisi database yang masih kosong (seed)
+        const DEFAULT_PERIODES = [
             { id: 'p1', name: 'CUT OFF NOVEMBER 2026', startDate: '2026-11-08', endDate: '2026-11-14' }
         ];
-        let currentPeriodeId = 'p1';
-        let dates = [];
-
-        // Global Employee Data
-        let employees = [
+        const DEFAULT_EMPLOYEES = [
             { id: 1, category: 'LEADER', name: 'ADE KURNIADI', shift: 'Shift 1', group: 'A', otData: { 'p1': { 0: { hours: 7, note: '7 S3' }, 6: { hours: 7, note: '7 S3' } } } },
             { id: 2, category: 'LEADER', name: 'KOMARUDIN', shift: 'Shift 1', group: 'B', otData: { 'p1': { 0: { hours: 7, note: '7 S3' }, 6: { hours: 7, note: '7 S3' } } } },
             { id: 3, category: 'LEADER', name: 'EKA APRIANA', shift: 'Shift 2', group: 'B', otData: { 'p1': { 0: { hours: 7, note: '7 S3' }, 6: { hours: 7, note: '7 S3' } } } },
@@ -358,260 +307,208 @@
             { id: 16, category: 'PART_CONTROL', name: 'CHANDRA WIJAYA', shift: 'Shift 1', group: 'FL', otData: { 'p1': { 2: { hours: 7, note: '7 S2' } } } }
         ];
 
+        // =====================================================
+        // STATE
+        // =====================================================
+        let periodes = [];
+        let employees = [];
+        let currentPeriodeId = null;
+        let dates = [];
         let autoSortEnabled = true;
 
-        // Initialize App
+        let serverVersion = 0;   // versi data terakhir dari server
+        let pendingSaves = 0;    // jumlah penyimpanan yang sedang berjalan
+        let hasLoadedOnce = false;
+        let toastTimer = null;
+
+        // =====================================================
+        // INIT
+        // =====================================================
         window.addEventListener('DOMContentLoaded', () => {
             renderPeriodeOptions();
-            setupCurrentPeriodeDates();
             renderTables();
-            loadDataFromCloud();
+            loadDataFromCloud(true);
+
+            // Real-time: polling berkala + saat tab kembali aktif
+            setInterval(() => {
+                if (document.hidden || pendingSaves > 0) return;
+                loadDataFromCloud(false);
+            }, POLL_INTERVAL_MS);
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && pendingSaves === 0) loadDataFromCloud(false);
+            });
         });
 
-        // Cloud Synchronization Helpers
+        // =====================================================
+        // CLOUD SYNC
+        // =====================================================
         function updateCloudBadge(status, text) {
             const badge = document.getElementById('cloudStatusBadge');
             if (!badge) return;
             badge.textContent = text;
-
-            if (status === 'synced') {
-                badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
-            } else if (status === 'syncing') {
-                badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300';
-            } else {
-                badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300';
-            }
+            const base = 'text-[10px] font-bold px-2 py-0.5 rounded-full border ';
+            if (status === 'synced') badge.className = base + 'bg-emerald-100 text-emerald-800 border-emerald-300';
+            else if (status === 'syncing') badge.className = base + 'bg-amber-100 text-amber-800 border-amber-300';
+            else badge.className = base + 'bg-rose-100 text-rose-800 border-rose-300';
         }
 
-        async function loadDataFromCloud() {
-            updateCloudBadge('syncing', 'Menghubungkan Cloud...');
+        // Terapkan data dari server ke tampilan
+        function applyState(result) {
+            employees = Array.isArray(result.employees) ? result.employees : [];
+            periodes = Array.isArray(result.periodes) ? result.periodes : [];
+            if (result.version) serverVersion = result.version;
+
+            if (!periodes.find(p => p.id === currentPeriodeId)) {
+                currentPeriodeId = periodes.length ? periodes[periodes.length - 1].id : null;
+            }
+            renderPeriodeOptions();
+            setupCurrentPeriodeDates();
+            renderTables();
+        }
+
+        // force = true -> selalu ambil data penuh; false -> hanya kalau versi di server berubah
+        async function loadDataFromCloud(force = false) {
+            if (force) updateCloudBadge('syncing', 'Menghubungkan Cloud...');
             try {
-                const response = await fetch(GOOGLE_SCRIPT_URL);
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result && result.status === 'success') {
-                        if (result.employees && Array.isArray(result.employees) && result.employees.length > 0) {
-                            employees = result.employees;
-                        }
-                        if (result.periodes && Array.isArray(result.periodes) && result.periodes.length > 0) {
-                            periodes = result.periodes;
-                        }
-                        renderPeriodeOptions();
-                        setupCurrentPeriodeDates();
-                        renderTables();
-                        updateCloudBadge('synced', 'ONLINE');
+                const since = force ? 0 : serverVersion;
+                const url = `${GOOGLE_SCRIPT_URL}?since=${since}&_=${Date.now()}`;
+                const response = await fetch(url);
+                const result = await response.json();
+                if (!result || result.status !== 'success') throw new Error(result && result.message || 'Respon tidak valid');
+
+                // Jika ada penyimpanan yang mulai berjalan saat menunggu respon, jangan timpa
+                if (pendingSaves > 0) return;
+
+                if (result.changed) {
+                    // Database kosong -> isi dengan data awal (sekali saja)
+                    if (!hasLoadedOnce && (!result.employees || result.employees.length === 0) && (!result.periodes || result.periodes.length === 0)) {
+                        applyState({ employees: DEFAULT_EMPLOYEES, periodes: DEFAULT_PERIODES, version: 0 });
+                        hasLoadedOnce = true;
+                        await callApi({ action: 'seed', employees: DEFAULT_EMPLOYEES, periodes: DEFAULT_PERIODES });
                         return;
                     }
+                    applyState(result);
                 }
-            } catch (err) {
-                console.warn('Gagal memuat data dari cloud, menggunakan data lokal:', err);
-            }
-            updateCloudBadge('offline', 'Lokal (Offline)');
-        }
-
-        async function saveDataToCloud() {
-            updateCloudBadge('syncing', 'Menyimpan ke Cloud...');
-            try {
-                const payload = {
-                    action: 'sync_all',
-                    employees: employees,
-                    periodes: periodes
-                };
-
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
+                hasLoadedOnce = true;
                 updateCloudBadge('synced', 'ONLINE');
             } catch (err) {
-                console.warn('Gagal menyimpan ke cloud:', err);
-                updateCloudBadge('offline', 'Lokal (Offline)');
+                console.warn('Gagal memuat data dari cloud:', err);
+                updateCloudBadge('offline', 'Offline');
+                if (force) showToast('Gagal terhubung ke cloud', true);
             }
         }
 
-        // Save OT Handler Override with Cloud Sync
-        function saveOT(e) {
-            e.preventDefault();
-            const empId = parseInt(document.getElementById('modalEmpId').value);
-            const dateIdx = parseInt(document.getElementById('modalDateIndex').value);
-            const hours = parseFloat(document.getElementById('modalOtHours').value) || 0;
-            const note = document.getElementById('modalNote').value.trim();
-
-            const emp = employees.find(e => e.id === empId);
-            if (emp) {
-                if (!emp.otData) emp.otData = {};
-                if (!emp.otData[currentPeriodeId]) emp.otData[currentPeriodeId] = {};
-
-                if (hours > 0) {
-                    emp.otData[currentPeriodeId][dateIdx] = { hours, note };
-                } else {
-                    delete emp.otData[currentPeriodeId][dateIdx];
-                }
-
-                renderTables();
-                closeOTModal();
-                showToast(`Jam OT ${emp.name} berhasil diperbarui!`);
-                saveDataToCloud();
+        // Kirim satu perubahan ke server. Server mengembalikan data terbaru.
+        async function callApi(payload) {
+            pendingSaves++;
+            updateCloudBadge('syncing', 'Menyimpan...');
+            let result = null;
+            let failed = false;
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    // text/plain = "simple request": tidak memicu preflight CORS (Apps Script tidak mendukung OPTIONS)
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                result = await response.json();
+                if (!result || result.status !== 'success') throw new Error(result && result.message || 'Respon tidak valid');
+            } catch (err) {
+                console.error('Gagal menyimpan ke cloud:', err);
+                failed = true;
+            } finally {
+                pendingSaves--;
             }
-        }
 
-        // Save Employee Override with Cloud Sync
-        function saveEmployee(e) {
-            e.preventDefault();
-            const idVal = document.getElementById('empIdInput').value;
-            const name = document.getElementById('empNameInput').value.trim().toUpperCase();
-            const category = document.getElementById('empCategoryInput').value;
-            const shift = document.getElementById('empShiftInput').value;
-            const group = document.getElementById('empGroupInput').value;
+            if (failed) {
+                updateCloudBadge('offline', 'Gagal Simpan');
+                showToast('Gagal menyimpan ke cloud, memuat ulang data...', true);
+                await loadDataFromCloud(true);
+                return null;
+            }
 
-            if (idVal) {
-                const emp = employees.find(e => e.id === parseInt(idVal));
-                if (emp) {
-                    emp.name = name;
-                    emp.category = category;
-                    emp.shift = shift;
-                    emp.group = group;
-                    showToast('Data karyawan diperbarui');
-                }
+            if (pendingSaves === 0) {
+                applyState(result);
+                updateCloudBadge('synced', 'ONLINE');
             } else {
-                const newEmp = {
-                    id: Date.now(),
-                    name,
-                    category,
-                    shift,
-                    group,
-                    otData: {}
-                };
-                employees.push(newEmp);
-                showToast('Karyawan baru ditambahkan');
+                serverVersion = result.version || serverVersion;
             }
-
-            renderTables();
-            closeEmpModal();
-            saveDataToCloud();
+            return result;
         }
 
-        function deleteEmployee(empId) {
-            const emp = employees.find(e => e.id === empId);
-            if (emp && confirm(`Apakah Anda yakin ingin menghapus ${emp.name}?`)) {
-                employees = employees.filter(e => e.id !== empId);
-                renderTables();
-                showToast('Karyawan berhasil dihapus');
-                saveDataToCloud();
-            }
-        }
-
-        // Save Periode Override with Cloud Sync
-        function savePeriode(e) {
-            e.preventDefault();
-            const name = document.getElementById('periodeNameInput').value.trim().toUpperCase();
-            const startDate = document.getElementById('periodeStartDateInput').value;
-            const endDate = document.getElementById('periodeEndDateInput').value;
-
-            if (new Date(endDate) < new Date(startDate)) {
-                showToast('Tanggal akhir tidak boleh lebih awal dari tanggal mulai!', true);
-                return;
-            }
-
-            const newId = 'p' + Date.now();
-            periodes.push({
-                id: newId,
-                name,
-                startDate,
-                endDate
-            });
-
-            currentPeriodeId = newId;
-            renderPeriodeOptions();
-            setupCurrentPeriodeDates();
-            renderTables();
-            closePeriodeModal();
-            showToast('Periode baru berhasil dibuat');
-            saveDataToCloud();
-        }
-
-        // Preset Color Helpers for Table Cells
-        function getOTBadgeClass(note) {
-            switch (note) {
-                case '3 Awal':
-                    return 'bg-emerald-200 text-emerald-900 border-emerald-400 font-bold';
-                case '3 Akhir':
-                    return 'bg-amber-200 text-amber-900 border-amber-400 font-bold';
-                case '7 S1':
-                    return 'bg-indigo-200 text-indigo-900 border-indigo-400 font-bold';
-                case '7 S2':
-                    return 'bg-fuchsia-200 text-fuchsia-900 border-fuchsia-400 font-bold';
-                case '7 S3':
-                    return 'bg-rose-200 text-rose-900 border-rose-400 font-bold';
-                case '1':
-                    return 'bg-sky-200 text-sky-900 border-sky-400 font-bold';
-                default:
-                    return 'bg-slate-100 text-slate-700 border-slate-200';
-            }
-        }
-
-        // Initialize App
-        window.addEventListener('DOMContentLoaded', () => {
-            renderPeriodeOptions();
-            setupCurrentPeriodeDates();
-            renderTables();
-        });
-
-        // Toast Helper
+        // =====================================================
+        // HELPERS
+        // =====================================================
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
-            const msgEl = document.getElementById('toastMsg');
-            const iconEl = document.getElementById('toastIcon');
-
-            msgEl.textContent = message;
-            if (isError) {
-                iconEl.className = 'fa-solid fa-circle-xmark text-rose-400 text-lg';
-            } else {
-                iconEl.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
-            }
+            document.getElementById('toastMsg').textContent = message;
+            document.getElementById('toastIcon').className = isError
+                ? 'fa-solid fa-circle-xmark text-rose-400 text-lg'
+                : 'fa-solid fa-circle-check text-emerald-400 text-lg';
 
             toast.classList.remove('translate-x-full');
-            setTimeout(() => {
-                toast.classList.add('translate-x-full');
-            }, 3000);
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.add('translate-x-full'), 3000);
         }
 
+        function getOTBadgeClass(note) {
+            switch (note) {
+                case '3 Awal':  return 'bg-emerald-200 text-emerald-900 border-emerald-400 font-bold';
+                case '3 Akhir': return 'bg-amber-200 text-amber-900 border-amber-400 font-bold';
+                case '7 S1':    return 'bg-indigo-200 text-indigo-900 border-indigo-400 font-bold';
+                case '7 S2':    return 'bg-fuchsia-200 text-fuchsia-900 border-fuchsia-400 font-bold';
+                case '7 S3':    return 'bg-rose-200 text-rose-900 border-rose-400 font-bold';
+                case '1':       return 'bg-sky-200 text-sky-900 border-sky-400 font-bold';
+                default:        return 'bg-slate-100 text-slate-700 border-slate-200';
+            }
+        }
+
+        function getEmpTotal(emp) {
+            let total = 0;
+            const p = emp.otData && emp.otData[currentPeriodeId];
+            if (p) Object.values(p).forEach(d => { total += (d.hours || 0); });
+            return total;
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        function toLocalISO(d) {
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${d.getFullYear()}-${m}-${day}`;
+        }
+
+        // =====================================================
+        // PERIODE
+        // =====================================================
         function renderPeriodeOptions() {
             const select = document.getElementById('periodeSelect');
-            select.innerHTML = periodes.map(p => `<option value="${p.id}" ${p.id === currentPeriodeId ? 'selected' : ''}>${p.name}</option>`).join('');
+            select.innerHTML = periodes.map(p =>
+                `<option value="${escapeHtml(p.id)}" ${p.id === currentPeriodeId ? 'selected' : ''}>${escapeHtml(p.name)}</option>`
+            ).join('');
         }
 
         function setupCurrentPeriodeDates() {
+            dates = [];
             const periode = periodes.find(p => p.id === currentPeriodeId);
             if (!periode) return;
 
-            dates = [];
             const start = new Date(periode.startDate + 'T00:00:00');
             const end = new Date((periode.endDate || periode.startDate) + 'T00:00:00');
-            
-            // Hitung selisih hari
-            const diffTime = Math.abs(end - start);
-            const daysCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
+            const daysCount = Math.round(Math.abs(end - start) / 86400000) + 1;
             const daysIndo = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
             for (let i = 0; i < daysCount; i++) {
                 const d = new Date(start);
                 d.setDate(start.getDate() + i);
-
-                const dayName = daysIndo[d.getDay()];
-                const dateNum = d.getDate();
-                const monthNum = d.getMonth() + 1;
-                const formattedDate = `${dateNum}/${monthNum}`;
-
                 dates.push({
                     index: i,
-                    day: dayName,
-                    label: formattedDate,
-                    fullDate: d.toISOString().split('T')[0]
+                    day: daysIndo[d.getDay()],
+                    label: `${d.getDate()}/${d.getMonth() + 1}`,
+                    fullDate: toLocalISO(d)
                 });
             }
         }
@@ -623,270 +520,45 @@
             showToast('Periode berhasil diubah');
         }
 
-        function toggleAutoSort() {
-            autoSortEnabled = !autoSortEnabled;
-            document.getElementById('sortStatusText').textContent = autoSortEnabled ? 'Aktif' : 'Nonaktif';
-            document.getElementById('autoSortBtn').classList.toggle('bg-emerald-50', autoSortEnabled);
-            document.getElementById('autoSortBtn').classList.toggle('border-emerald-300', autoSortEnabled);
-            renderTables();
+        function openPeriodeModal() {
+            document.getElementById('periodeForm').reset();
+            document.getElementById('periodeModal').classList.remove('hidden');
+            document.getElementById('periodeModal').classList.add('flex');
         }
 
-        // Render All Category Tables
-        function renderTables() {
-            const container = document.getElementById('tablesContainer');
-            container.innerHTML = '';
-
-            const shiftVal = document.getElementById('shiftFilter').value;
-            const groupVal = document.getElementById('groupFilter').value;
-            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
-
-            const categories = [
-                { key: 'LEADER', title: 'REKAP OVERTIME - LEADER', color: 'emerald' },
-                { key: 'GRUP', title: 'REKAP OVERTIME - GRUP', color: 'teal' },
-                { key: 'PART_CONTROL', title: 'REKAP OVERTIME - PART CONTROL', color: 'indigo' }
-            ];
-
-            categories.forEach(cat => {
-                let filtered = employees.filter(e => e.category === cat.key);
-
-                if (shiftVal !== 'ALL') filtered = filtered.filter(e => e.shift === shiftVal);
-                if (groupVal !== 'ALL') filtered = filtered.filter(e => e.group === groupVal);
-                if (searchVal) filtered = filtered.filter(e => e.name.toLowerCase().includes(searchVal));
-
-                // Calculate Totals per Employee
-            filtered.forEach(emp => {
-                let total = 0;
-                if (emp.otData && emp.otData[currentPeriodeId]) {
-                    Object.values(emp.otData[currentPeriodeId]).forEach(d => {
-                        total += (d.hours || 0);
-                    });
-                }
-                emp.currentTotalHours = total;
-            });
-
-            // Auto Sort Descending by Total Hours if Enabled
-            if (autoSortEnabled) {
-                filtered.sort((a, b) => b.currentTotalHours - a.currentTotalHours);
-            }
-
-            const catElement = createCategoryTable(cat, filtered);
-            container.appendChild(catElement);
-        });
-    }
-
-    function createCategoryTable(category, catEmployees) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden';
-
-        // Calculate Header Summaries per Day
-        const dayTotals = dates.map(d => {
-            let sum = 0;
-            catEmployees.forEach(emp => {
-                if (emp.otData && emp.otData[currentPeriodeId] && emp.otData[currentPeriodeId][d.index]) {
-                    sum += (emp.otData[currentPeriodeId][d.index].hours || 0);
-                }
-            });
-            return sum;
-        });
-
-        const grandTotalCategory = dayTotals.reduce((a, b) => a + b, 0);
-
-        let datesHeaderHtml = '';
-        dates.forEach((d) => {
-            datesHeaderHtml += `
-                <th class="p-2 sm:p-2.5 text-center text-xs font-bold text-slate-700 min-w-[70px] border-b border-r border-slate-200 bg-slate-100">
-                    <div class="text-[10px] text-slate-400 font-semibold uppercase">${d.day}</div>
-                    <div>${d.label}</div>
-                </th>
-            `;
-        });
-
-        // Employee Rows
-        let rowsHtml = '';
-        if (catEmployees.length === 0) {
-            rowsHtml = `
-                <tr>
-                    <td colspan="${dates.length + 3}" class="p-8 text-center text-xs sm:text-sm text-slate-400 font-medium">
-                        Tidak ada data karyawan ditemukan.
-                    </td>
-                </tr>
-            `;
-        } else {
-            catEmployees.forEach((emp, idx) => {
-                let otCells = '';
-                dates.forEach((d) => {
-                    const cellData = (emp.otData && emp.otData[currentPeriodeId]) ? emp.otData[currentPeriodeId][d.index] : null;
-                    const hours = cellData ? cellData.hours : '';
-                    const note = cellData ? (cellData.note || cellData.hours) : '';
-
-                    let badgeClass = note ? getOTBadgeClass(note) : 'bg-transparent text-slate-300 hover:bg-slate-100 hover:text-slate-600';
-
-                    otCells += `
-                        <td onclick="openOTModal(${emp.id}, ${d.index})" class="p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition">
-                            <div class="w-full py-1.5 px-1 rounded-lg text-xs transition border ${badgeClass}">
-                                ${note ? note : '+'}
-                            </div>
-                        </td>
-                    `;
-                });
-
-                rowsHtml += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="p-3 text-center text-xs font-semibold text-slate-400 border-b border-r border-slate-200 sticky-col-1 bg-white">
-                            ${idx + 1}
-                        </td>
-                        <td class="p-3 border-b border-r border-slate-200 sticky-col-2 bg-white">
-                            <div class="flex items-center justify-between group">
-                                <span class="text-xs sm:text-sm font-bold text-slate-800">${emp.name}</span>
-                                <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition">
-                                    <button onclick="openEmployeeModal(${emp.id})" class="text-slate-400 hover:text-blue-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
-                                    <button onclick="deleteEmployee(${emp.id})" class="text-slate-400 hover:text-rose-600 p-1 text-xs"><i class="fa-solid fa-trash"></i></button>
-                                </div>
-                            </div>
-                        </td>
-                        ${otCells}
-                        <td class="p-3 text-center text-xs sm:text-sm font-black text-slate-800 bg-slate-50 border-b border-slate-200">
-                            ${emp.currentTotalHours}
-                        </td>
-                    </tr>
-                `;
-            });
+        function closePeriodeModal() {
+            document.getElementById('periodeModal').classList.add('hidden');
+            document.getElementById('periodeModal').classList.remove('flex');
         }
 
-        // Category Summary Row
-        let dayTotalsHtml = '';
-        dayTotals.forEach(tot => {
-            dayTotalsHtml += `
-                <td class="p-2.5 text-center text-xs font-bold text-slate-800 border-t-2 border-slate-300 border-r border-slate-200 bg-slate-100">
-                    ${tot}
-                </td>
-            `;
-        });
-
-        wrapper.innerHTML = `
-            <div class="bg-slate-800 text-white p-4 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-${category.color}-400"></span>
-                    <h2 class="font-bold text-sm sm:text-base tracking-wide uppercase">${category.title}</h2>
-                </div>
-                <span class="text-xs font-semibold px-3 py-1 bg-white/10 rounded-full">Total: ${grandTotalCategory} Jam</span>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse min-w-[800px]">
-                    <thead>
-                        <tr class="bg-slate-100">
-                            <th class="p-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider w-12 border-b border-r border-slate-200 sticky-col-1 bg-slate-100">NO</th>
-                            <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[200px] border-b border-r border-slate-200 sticky-col-2 bg-slate-100">NAMA KARYAWAN</th>
-                            ${datesHeaderHtml}
-                            <th class="p-3 text-center text-xs font-bold text-slate-700 uppercase tracking-wider min-w-[90px] border-b border-slate-200 bg-slate-200/70">TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2" class="p-3 text-right text-xs font-bold text-slate-700 uppercase tracking-wider border-t-2 border-slate-300 border-r border-slate-200 sticky-col-1 bg-slate-100">
-                                TOTAL JAM OVERTIME
-                            </td>
-                            ${dayTotalsHtml}
-                            <td class="p-3 text-center text-sm font-black text-emerald-700 bg-slate-200 border-t-2 border-slate-300">
-                                ${grandTotalCategory}
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        `;
-
-        return wrapper;
-    }
-
-    // OT Input Daily Modal Preset Selection with Active Highlighting
-        function selectOTPreset(hours, label) {
-            document.getElementById('modalOtHours').value = hours;
-            document.getElementById('modalNote').value = label;
-
-            // Highlight selected button UI
-            document.querySelectorAll('.ot-preset-btn').forEach(btn => {
-                const preset = btn.getAttribute('data-preset');
-                if (preset === label) {
-                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-slate-800', 'scale-105', 'shadow-md');
-                } else {
-                    btn.classList.remove('ring-2', 'ring-offset-2', 'ring-slate-800', 'scale-105', 'shadow-md');
-                }
-            });
-        }
-
-        function openOTModal(empId, dateIdx) {
-            const emp = employees.find(e => e.id === empId);
-            const dateObj = dates[dateIdx];
-            if (!emp || !dateObj) return;
-
-            document.getElementById('modalEmpId').value = empId;
-            document.getElementById('modalDateIndex').value = dateIdx;
-            document.getElementById('modalEmpName').value = emp.name;
-            document.getElementById('modalDateLabel').value = `${dateObj.label} (${dateObj.day})`;
-
-            const pData = (emp.otData && emp.otData[currentPeriodeId]) ? emp.otData[currentPeriodeId][dateIdx] : null;
-            const currentHours = pData ? pData.hours : 0;
-            const currentNote = pData ? (pData.note || '') : '';
-
-            selectOTPreset(currentHours, currentNote);
-
-            document.getElementById('otModal').classList.remove('hidden');
-            document.getElementById('otModal').classList.add('flex');
-        }
-
-        function closeOTModal() {
-            document.getElementById('otModal').classList.add('hidden');
-            document.getElementById('otModal').classList.remove('flex');
-        }
-
-        function saveOT(e) {
+        function savePeriode(e) {
             e.preventDefault();
-            const empId = parseInt(document.getElementById('modalEmpId').value);
-            const dateIdx = parseInt(document.getElementById('modalDateIndex').value);
-            const hours = parseFloat(document.getElementById('modalOtHours').value) || 0;
-            const note = document.getElementById('modalNote').value.trim();
+            const name = document.getElementById('periodeNameInput').value.trim().toUpperCase();
+            const startDate = document.getElementById('periodeStartDateInput').value;
+            const endDate = document.getElementById('periodeEndDateInput').value;
 
-            const emp = employees.find(e => e.id === empId);
-            if (emp) {
-                if (!emp.otData) emp.otData = {};
-                if (!emp.otData[currentPeriodeId]) emp.otData[currentPeriodeId] = {};
-
-                if (hours > 0) {
-                    emp.otData[currentPeriodeId][dateIdx] = { hours, note };
-                } else {
-                    delete emp.otData[currentPeriodeId][dateIdx];
-                }
-
-                renderTables();
-                closeOTModal();
-                showToast(`Jam OT ${emp.name} berhasil diperbarui!`);
+            if (new Date(endDate) < new Date(startDate)) {
+                showToast('Tanggal akhir tidak boleh lebih awal dari tanggal mulai!', true);
+                return;
             }
+
+            const periode = { id: 'p' + Date.now(), name, startDate, endDate };
+            periodes.push(periode);
+            currentPeriodeId = periode.id;
+
+            renderPeriodeOptions();
+            setupCurrentPeriodeDates();
+            renderTables();
+            closePeriodeModal();
+            showToast('Periode baru berhasil dibuat');
+            callApi({ action: 'add_periode', periode });
         }
 
-        // Header Info Edit Helper
-        function editHeaderInfo(dateIdx, type) {
-            if (!headerData[currentPeriodeId]) headerData[currentPeriodeId] = {};
-            if (!headerData[currentPeriodeId][dateIdx]) headerData[currentPeriodeId][dateIdx] = {};
-
-            const currentVal = headerData[currentPeriodeId][dateIdx][type] || '';
-            const newVal = prompt(`Masukkan info ${type.toUpperCase()} untuk tanggal ${dates[dateIdx].label}:`, currentVal);
-
-            if (newVal !== null) {
-                headerData[currentPeriodeId][dateIdx][type] = newVal;
-                renderTables();
-                showToast('Info header berhasil diperbarui');
-            }
-        }
-
-        // Employee Management Modals
+        // =====================================================
+        // KARYAWAN
+        // =====================================================
         function openEmployeeModal(empId = null) {
-            const form = document.getElementById('empForm');
-            form.reset();
+            document.getElementById('empForm').reset();
 
             if (empId) {
                 const emp = employees.find(e => e.id === empId);
@@ -920,30 +592,22 @@
             const shift = document.getElementById('empShiftInput').value;
             const group = document.getElementById('empGroupInput').value;
 
+            let payloadEmp;
             if (idVal) {
-                const emp = employees.find(e => e.id === parseInt(idVal));
-                if (emp) {
-                    emp.name = name;
-                    emp.category = category;
-                    emp.shift = shift;
-                    emp.group = group;
-                    showToast('Data karyawan diperbarui');
-                }
+                const emp = employees.find(x => x.id === parseInt(idVal));
+                if (!emp) { closeEmpModal(); return; }
+                Object.assign(emp, { name, category, shift, group });
+                payloadEmp = { id: emp.id, name, category, shift, group };
+                showToast('Data karyawan diperbarui');
             } else {
-                const newEmp = {
-                    id: Date.now(),
-                    name,
-                    category,
-                    shift,
-                    group,
-                    otData: {}
-                };
-                employees.push(newEmp);
+                payloadEmp = { id: Date.now(), name, category, shift, group };
+                employees.push({ ...payloadEmp, otData: {} });
                 showToast('Karyawan baru ditambahkan');
             }
 
             renderTables();
             closeEmpModal();
+            callApi({ action: 'upsert_employee', employee: payloadEmp });
         }
 
         function deleteEmployee(empId) {
@@ -952,74 +616,231 @@
                 employees = employees.filter(e => e.id !== empId);
                 renderTables();
                 showToast('Karyawan berhasil dihapus');
+                callApi({ action: 'delete_employee', empId });
             }
         }
 
-        // Periode Management Modals
-        function openPeriodeModal() {
-            document.getElementById('periodeForm').reset();
-            document.getElementById('periodeModal').classList.remove('hidden');
-            document.getElementById('periodeModal').classList.add('flex');
+        // =====================================================
+        // INPUT OT
+        // =====================================================
+        function selectOTPreset(hours, label) {
+            document.getElementById('modalOtHours').value = hours;
+            document.getElementById('modalNote').value = label;
+
+            document.querySelectorAll('.ot-preset-btn').forEach(btn => {
+                const active = btn.getAttribute('data-preset') === label;
+                ['ring-2', 'ring-offset-2', 'ring-slate-800', 'scale-105', 'shadow-md'].forEach(c => btn.classList.toggle(c, active));
+            });
         }
 
-        function closePeriodeModal() {
-            document.getElementById('periodeModal').classList.add('hidden');
-            document.getElementById('periodeModal').classList.remove('flex');
+        function openOTModal(empId, dateIdx) {
+            const emp = employees.find(e => e.id === empId);
+            const dateObj = dates[dateIdx];
+            if (!emp || !dateObj) return;
+
+            document.getElementById('modalEmpId').value = empId;
+            document.getElementById('modalDateIndex').value = dateIdx;
+            document.getElementById('modalEmpName').value = emp.name;
+            document.getElementById('modalDateLabel').value = `${dateObj.label} (${dateObj.day})`;
+
+            const pData = (emp.otData && emp.otData[currentPeriodeId]) ? emp.otData[currentPeriodeId][dateIdx] : null;
+            selectOTPreset(pData ? pData.hours : 0, pData ? (pData.note || '') : '');
+
+            document.getElementById('otModal').classList.remove('hidden');
+            document.getElementById('otModal').classList.add('flex');
         }
 
-        function savePeriode(e) {
+        function closeOTModal() {
+            document.getElementById('otModal').classList.add('hidden');
+            document.getElementById('otModal').classList.remove('flex');
+        }
+
+        function saveOT(e) {
             e.preventDefault();
-            const name = document.getElementById('periodeNameInput').value.trim().toUpperCase();
-            const startDate = document.getElementById('periodeStartDateInput').value;
-            const endDate = document.getElementById('periodeEndDateInput').value;
+            const empId = parseInt(document.getElementById('modalEmpId').value);
+            const dateIdx = parseInt(document.getElementById('modalDateIndex').value);
+            const hours = parseFloat(document.getElementById('modalOtHours').value) || 0;
+            const note = document.getElementById('modalNote').value.trim();
 
-            if (new Date(endDate) < new Date(startDate)) {
-                showToast('Tanggal akhir tidak boleh lebih awal dari tanggal mulai!', true);
-                return;
-            }
+            const emp = employees.find(x => x.id === empId);
+            if (!emp) { closeOTModal(); return; }
 
-            const newId = 'p' + Date.now();
-            periodes.push({
-                id: newId,
-                name,
-                startDate,
-                endDate
+            if (!emp.otData) emp.otData = {};
+            if (!emp.otData[currentPeriodeId]) emp.otData[currentPeriodeId] = {};
+
+            if (hours > 0) emp.otData[currentPeriodeId][dateIdx] = { hours, note };
+            else delete emp.otData[currentPeriodeId][dateIdx];
+
+            renderTables();
+            closeOTModal();
+            showToast(`Jam OT ${emp.name} berhasil diperbarui!`);
+            callApi({ action: 'set_ot', empId, periodeId: currentPeriodeId, dayIndex: dateIdx, hours, note });
+        }
+
+        // =====================================================
+        // RENDER
+        // =====================================================
+        function toggleAutoSort() {
+            autoSortEnabled = !autoSortEnabled;
+            document.getElementById('sortStatusText').textContent = autoSortEnabled ? 'Aktif' : 'Nonaktif';
+            document.getElementById('autoSortBtn').classList.toggle('bg-emerald-50', autoSortEnabled);
+            document.getElementById('autoSortBtn').classList.toggle('border-emerald-300', autoSortEnabled);
+            renderTables();
+        }
+
+        function renderTables() {
+            const container = document.getElementById('tablesContainer');
+            container.innerHTML = '';
+
+            const shiftVal = document.getElementById('shiftFilter').value;
+            const groupVal = document.getElementById('groupFilter').value;
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            const categories = [
+                { key: 'LEADER', title: 'REKAP OVERTIME - LEADER', color: 'emerald' },
+                { key: 'GRUP', title: 'REKAP OVERTIME - GRUP', color: 'teal' },
+                { key: 'PART_CONTROL', title: 'REKAP OVERTIME - PART CONTROL', color: 'indigo' }
+            ];
+
+            categories.forEach(cat => {
+                let filtered = employees.filter(e => e.category === cat.key);
+                if (shiftVal !== 'ALL') filtered = filtered.filter(e => e.shift === shiftVal);
+                if (groupVal !== 'ALL') filtered = filtered.filter(e => e.group === groupVal);
+                if (searchVal) filtered = filtered.filter(e => e.name.toLowerCase().includes(searchVal));
+
+                if (autoSortEnabled) filtered.sort((a, b) => getEmpTotal(b) - getEmpTotal(a));
+
+                container.appendChild(createCategoryTable(cat, filtered));
+            });
+        }
+
+        function createCategoryTable(category, catEmployees) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden';
+
+            const dayTotals = dates.map(d => {
+                let sum = 0;
+                catEmployees.forEach(emp => {
+                    const cell = emp.otData && emp.otData[currentPeriodeId] && emp.otData[currentPeriodeId][d.index];
+                    if (cell) sum += (cell.hours || 0);
+                });
+                return sum;
+            });
+            const grandTotalCategory = dayTotals.reduce((a, b) => a + b, 0);
+
+            let datesHeaderHtml = '';
+            dates.forEach(d => {
+                datesHeaderHtml += `
+                    <th class="p-2 sm:p-2.5 text-center text-xs font-bold text-slate-700 min-w-[70px] border-b border-r border-slate-200 bg-slate-100">
+                        <div class="text-[10px] text-slate-400 font-semibold uppercase">${d.day}</div>
+                        <div>${d.label}</div>
+                    </th>`;
             });
 
-            currentPeriodeId = newId;
-            renderPeriodeOptions();
-            setupCurrentPeriodeDates();
-            renderTables();
-            closePeriodeModal();
-            showToast('Periode baru berhasil dibuat');
+            let rowsHtml = '';
+            if (catEmployees.length === 0) {
+                rowsHtml = `
+                    <tr>
+                        <td colspan="${dates.length + 3}" class="p-8 text-center text-xs sm:text-sm text-slate-400 font-medium">
+                            Tidak ada data karyawan ditemukan.
+                        </td>
+                    </tr>`;
+            } else {
+                catEmployees.forEach((emp, idx) => {
+                    let otCells = '';
+                    dates.forEach(d => {
+                        const cellData = (emp.otData && emp.otData[currentPeriodeId]) ? emp.otData[currentPeriodeId][d.index] : null;
+                        const note = cellData ? (cellData.note || cellData.hours) : '';
+                        const badgeClass = note ? getOTBadgeClass(String(note)) : 'bg-transparent text-slate-300 hover:bg-slate-100 hover:text-slate-600';
+
+                        otCells += `
+                            <td onclick="openOTModal(${emp.id}, ${d.index})" class="p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition">
+                                <div class="w-full py-1.5 px-1 rounded-lg text-xs transition border ${badgeClass}">${note ? escapeHtml(note) : '+'}</div>
+                            </td>`;
+                    });
+
+                    rowsHtml += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-3 text-center text-xs font-semibold text-slate-400 border-b border-r border-slate-200 sticky-col-1 bg-white">${idx + 1}</td>
+                            <td class="p-3 border-b border-r border-slate-200 sticky-col-2 bg-white">
+                                <div class="flex items-center justify-between group">
+                                    <span class="text-xs sm:text-sm font-bold text-slate-800">${escapeHtml(emp.name)}</span>
+                                    <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition">
+                                        <button onclick="openEmployeeModal(${emp.id})" class="text-slate-400 hover:text-blue-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
+                                        <button onclick="deleteEmployee(${emp.id})" class="text-slate-400 hover:text-rose-600 p-1 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            </td>
+                            ${otCells}
+                            <td class="p-3 text-center text-xs sm:text-sm font-black text-slate-800 bg-slate-50 border-b border-slate-200">${getEmpTotal(emp)}</td>
+                        </tr>`;
+                });
+            }
+
+            let dayTotalsHtml = '';
+            dayTotals.forEach(tot => {
+                dayTotalsHtml += `<td class="p-2.5 text-center text-xs font-bold text-slate-800 border-t-2 border-slate-300 border-r border-slate-200 bg-slate-100">${tot}</td>`;
+            });
+
+            wrapper.innerHTML = `
+                <div class="bg-slate-800 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-${category.color}-400"></span>
+                        <h2 class="font-bold text-sm sm:text-base tracking-wide uppercase">${category.title}</h2>
+                    </div>
+                    <span class="text-xs font-semibold px-3 py-1 bg-white/10 rounded-full">Total: ${grandTotalCategory} Jam</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                            <tr class="bg-slate-100">
+                                <th class="p-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider w-12 border-b border-r border-slate-200 sticky-col-1 bg-slate-100">NO</th>
+                                <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[200px] border-b border-r border-slate-200 sticky-col-2 bg-slate-100">NAMA KARYAWAN</th>
+                                ${datesHeaderHtml}
+                                <th class="p-3 text-center text-xs font-bold text-slate-700 uppercase tracking-wider min-w-[90px] border-b border-slate-200 bg-slate-200/70">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="p-3 text-right text-xs font-bold text-slate-700 uppercase tracking-wider border-t-2 border-slate-300 border-r border-slate-200 sticky-col-1 bg-slate-100">TOTAL JAM OVERTIME</td>
+                                ${dayTotalsHtml}
+                                <td class="p-3 text-center text-sm font-black text-emerald-700 bg-slate-200 border-t-2 border-slate-300">${grandTotalCategory}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>`;
+
+            return wrapper;
         }
 
-        // Export Function (CSV Format)
+        // =====================================================
+        // EXPORT (CSV, bisa dibuka di Excel)
+        // =====================================================
         function exportToExcel() {
-            let csvContent = "data:text/csv;charset=utf-8,";
             const periode = periodes.find(p => p.id === currentPeriodeId);
+            const q = v => `"${String(v).replace(/"/g, '""')}"`;
 
-            csvContent += `REKAP OVERTIME KARYAWAN - ${periode ? periode.name : ''}\n\n`;
-
-            const dateHeaders = dates.map(d => `${d.day} (${d.label})`).join(",");
-            csvContent += `No,Nama Karyawan,Kategori,Shift,Grup,${dateHeaders},Total Jam\n`;
+            let csv = `REKAP OVERTIME KARYAWAN - ${periode ? periode.name : ''}\n\n`;
+            csv += ['No', 'Nama Karyawan', 'Kategori', 'Shift', 'Grup', ...dates.map(d => `${d.day} (${d.label})`), 'Total Jam'].map(q).join(',') + '\n';
 
             employees.forEach((emp, idx) => {
-                let rowDates = dates.map(d => {
+                const cells = dates.map(d => {
                     const data = (emp.otData && emp.otData[currentPeriodeId]) ? emp.otData[currentPeriodeId][d.index] : null;
-                    return data ? (data.note || data.hours) : "0";
-                }).join(",");
-
-                csvContent += `${idx + 1},"${emp.name}",${emp.category},${emp.shift},${emp.group},${rowDates},${emp.currentTotalHours || 0}\n`;
+                    return data ? (data.note || data.hours) : '0';
+                });
+                csv += [idx + 1, emp.name, emp.category, emp.shift, emp.group, ...cells, getEmpTotal(emp)].map(q).join(',') + '\n';
             });
 
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Rekap_Overtime_${periode ? periode.name.replace(/\s+/g, '_') : 'Export'}.csv`);
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Rekap_Overtime_${periode ? periode.name.replace(/\s+/g, '_') : 'Export'}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
 
             showToast('File CSV berhasil di-download');
         }
