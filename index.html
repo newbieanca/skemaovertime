@@ -13,8 +13,15 @@
         .overflow-x-auto::-webkit-scrollbar-track { background: #f1f5f9; }
         .overflow-x-auto::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .sticky-col-1 { position: sticky; left: 0; z-index: 20; }
-        .sticky-col-2 { position: sticky; left: 50px; z-index: 20; }
+        /* Kolom freeze: NO | NAMA | TOTAL (lebar pasti agar tidak ada celah di antaranya) */
+        :root { --c1: 40px; --c2: 190px; --c3: 56px; }
+        @media (max-width: 640px) { :root { --c1: 32px; --c2: 120px; --c3: 46px; } }
+        .tbl-sep { border-collapse: separate; border-spacing: 0; }
+        .sticky-col-1, .sticky-col-2, .sticky-col-3 { position: sticky; z-index: 20; box-sizing: border-box; padding-left: 6px !important; padding-right: 6px !important; }
+        .sticky-col-1 { left: 0; width: var(--c1); min-width: var(--c1); max-width: var(--c1); }
+        .sticky-col-2 { left: var(--c1); width: var(--c2); min-width: var(--c2); max-width: var(--c2); }
+        .sticky-col-3 { left: calc(var(--c1) + var(--c2)); width: var(--c3); min-width: var(--c3); max-width: var(--c3); border-right: 2px solid #94a3b8 !important; }
+        .sticky-span2 { position: sticky; left: 0; z-index: 20; box-sizing: border-box; width: calc(var(--c1) + var(--c2)); min-width: calc(var(--c1) + var(--c2)); }
 
         /* Warna jam OT (sesuai referensi) */
         .ot-c-3awal  { background:#FFE5A0; border-color:#F0BF5A; color:#6B4700; }
@@ -298,7 +305,7 @@
 
     <!-- Modal Info Hari (Grup / Shift / Leader) -->
     <div id="headerModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-slate-100">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[94vh] overflow-y-auto transform transition-all border border-slate-100">
             <div class="bg-slate-800 text-white p-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-users-gear text-emerald-400"></i>
@@ -344,7 +351,7 @@
                     <textarea id="hdrLeaders" rows="4" placeholder="Contoh:&#10;Bejo&#10;Afiat&#10;Rival" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none"></textarea>
                     <div class="mt-2">
                         <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tambah cepat dari daftar leader</div>
-                        <div id="hdrLeaderChips" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto"></div>
+                        <div id="hdrLeaderChips" class="flex flex-wrap gap-1.5"></div>
                     </div>
                 </div>
 
@@ -999,8 +1006,8 @@
                                     </div>
                                 </div>
                             </td>
+                            <td class="sticky-col-3 p-3 text-center text-xs sm:text-sm font-black text-slate-800 border-b border-slate-200 ${idx % 2 ? 'bg-slate-100' : 'bg-slate-50'}">${getEmpTotal(emp)}</td>
                             ${otCells}
-                            <td class="p-3 text-center text-xs sm:text-sm font-black text-slate-800 bg-slate-50 border-b border-slate-200">${getEmpTotal(emp)}</td>
                         </tr>`;
                 });
             }
@@ -1035,14 +1042,14 @@
             });
             const infoRowsHtml = `
                 <tr class="bg-white">
-                    <th colspan="2" class="p-2 text-right text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-r border-slate-200 sticky-col-1 bg-slate-100">Grup / Shift</th>
+                    <th colspan="2" class="p-2 text-right text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-r border-slate-200 sticky-span2 bg-slate-100">Grup / Shift</th>
+                    <th class="sticky-col-3 border-b border-slate-200 bg-slate-100"></th>
                     ${codeCells}
-                    <th class="border-b border-slate-200 bg-slate-100"></th>
                 </tr>
                 <tr class="bg-white">
-                    <th colspan="2" class="p-2 text-right align-top text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-r border-slate-200 sticky-col-1 bg-slate-100">Leader</th>
+                    <th colspan="2" class="p-2 text-right align-top text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-r border-slate-200 sticky-span2 bg-slate-100">Leader</th>
+                    <th class="sticky-col-3 border-b border-slate-200 bg-slate-100"></th>
                     ${leaderCells}
-                    <th class="border-b border-slate-200 bg-slate-100"></th>
                 </tr>`;
 
             wrapper.innerHTML = `
@@ -1060,20 +1067,20 @@
                 </div>
 
                 <div class="overflow-x-auto table-scroll">
-                    <table class="w-full text-left border-collapse min-w-[800px]">
+                    <table class="tbl-sep w-full text-left min-w-[800px]">
                         <thead>${infoRowsHtml}<tr class="bg-slate-100">
-                                <th class="p-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider w-12 border-b border-r border-slate-200 sticky-col-1 bg-slate-100">NO</th>
-                                <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[200px] border-b border-r border-slate-200 sticky-col-2 bg-slate-100">NAMA KARYAWAN</th>
+                                <th class="p-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-r border-slate-200 sticky-col-1 bg-slate-100">NO</th>
+                                <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-r border-slate-200 sticky-col-2 bg-slate-100">NAMA KARYAWAN</th>
+                                <th class="sticky-col-3 p-3 text-center text-[10px] font-bold text-slate-700 uppercase tracking-wider border-b border-slate-200 bg-slate-200">TOTAL</th>
                                 ${datesHeaderHtml}
-                                <th class="p-3 text-center text-xs font-bold text-slate-700 uppercase tracking-wider min-w-[90px] border-b border-slate-200 bg-slate-200/70">TOTAL</th>
                             </tr>
                         </thead>
                         <tbody>${rowsHtml}</tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="2" class="p-3 text-right text-xs font-bold text-slate-700 uppercase tracking-wider border-t-2 border-slate-300 border-r border-slate-200 sticky-col-1 bg-slate-100">TOTAL JAM OVERTIME</td>
+                                <td colspan="2" class="p-3 text-right text-xs font-bold text-slate-700 uppercase tracking-wider border-t-2 border-slate-300 border-r border-slate-200 sticky-span2 bg-slate-100">TOTAL JAM OVERTIME</td>
+                                <td class="sticky-col-3 p-3 text-center text-sm font-black text-emerald-700 bg-slate-200 border-t-2 border-b border-slate-300">${grandTotalCategory}</td>
                                 ${dayTotalsHtml}
-                                <td class="p-3 text-center text-sm font-black text-emerald-700 bg-slate-200 border-t-2 border-slate-300">${grandTotalCategory}</td>
                             </tr>
                         </tfoot>
                     </table>
