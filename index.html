@@ -15,6 +15,23 @@
         .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         .sticky-col-1 { position: sticky; left: 0; z-index: 20; }
         .sticky-col-2 { position: sticky; left: 50px; z-index: 20; }
+
+        /* Warna jam OT (sesuai referensi) */
+        .ot-c-3awal  { background:#FFE5A0; border-color:#F0BF5A; color:#6B4700; }
+        .ot-c-3akhir { background:#D5E8C4; border-color:#9BC57C; color:#2B5415; }
+        .ot-c-7s1    { background:#BFE1F7; border-color:#7DB8E3; color:#124568; }
+        .ot-c-7s2    { background:#C5D7E0; border-color:#8DA9B8; color:#2A4150; }
+        .ot-c-7s3    { background:#E3CEEE; border-color:#B58FCE; color:#4B2866; }
+        .ot-c-1      { background:#F9CDD8; border-color:#E395AA; color:#76243D; }
+
+        .ot-preset-btn { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+        .ot-preset-btn:hover { filter: brightness(0.95); }
+        button, [onclick] { touch-action: manipulation; }
+
+        /* Highlight baris + kolom saat hover, supaya mudah mencocokkan nama dengan tanggal */
+        th.col-hl, td.col-hl { box-shadow: inset 0 0 0 9999px rgba(16,185,129,.12); }
+        tbody tr:hover > td { box-shadow: inset 0 0 0 9999px rgba(16,185,129,.08); }
+        tbody tr:hover > td.col-hl { box-shadow: inset 0 0 0 9999px rgba(16,185,129,.26); }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen">
@@ -149,34 +166,36 @@
                     <input type="hidden" id="modalNote" value="">
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                        <button type="button" onclick="selectOTPreset(3, '3 Awal')" class="ot-preset-btn p-3 rounded-xl border-2 border-emerald-400 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="3 Awal">
-                            <span class="text-sm sm:text-base font-extrabold text-emerald-800">3 Awal</span>
-                            <span class="text-[10px] text-emerald-700 font-bold">3 Jam (Hijau)</span>
+                        <button type="button" onclick="selectOTPreset(3, '3 Awal')" ondblclick="quickSaveOT(3, '3 Awal')" class="ot-preset-btn ot-c-3awal p-3 rounded-xl border-2 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="3 Awal">
+                            <span class="text-sm sm:text-base font-extrabold">3 Awal</span>
+                            <span class="text-[10px] font-bold opacity-80">3 Jam (Kuning)</span>
                         </button>
-                        <button type="button" onclick="selectOTPreset(3, '3 Akhir')" class="ot-preset-btn p-3 rounded-xl border-2 border-amber-400 bg-amber-100 hover:bg-amber-200 text-amber-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="3 Akhir">
-                            <span class="text-sm sm:text-base font-extrabold text-amber-800">3 Akhir</span>
-                            <span class="text-[10px] text-amber-700 font-bold">3 Jam (Oranye)</span>
+                        <button type="button" onclick="selectOTPreset(3, '3 Akhir')" ondblclick="quickSaveOT(3, '3 Akhir')" class="ot-preset-btn ot-c-3akhir p-3 rounded-xl border-2 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="3 Akhir">
+                            <span class="text-sm sm:text-base font-extrabold">3 Akhir</span>
+                            <span class="text-[10px] font-bold opacity-80">3 Jam (Hijau)</span>
                         </button>
-                        <button type="button" onclick="selectOTPreset(7, '7 S1')" class="ot-preset-btn p-3 rounded-xl border-2 border-indigo-400 bg-indigo-100 hover:bg-indigo-200 text-indigo-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S1">
-                            <span class="text-sm sm:text-base font-extrabold text-indigo-800">7 S1</span>
-                            <span class="text-[10px] text-indigo-700 font-bold">7 Jam (Ungu)</span>
+                        <button type="button" onclick="selectOTPreset(7, '7 S1')" ondblclick="quickSaveOT(7, '7 S1')" class="ot-preset-btn ot-c-7s1 p-3 rounded-xl border-2 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S1">
+                            <span class="text-sm sm:text-base font-extrabold">7 S1</span>
+                            <span class="text-[10px] font-bold opacity-80">7 Jam (Biru)</span>
                         </button>
-                        <button type="button" onclick="selectOTPreset(7, '7 S2')" class="ot-preset-btn p-3 rounded-xl border-2 border-fuchsia-400 bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S2">
-                            <span class="text-sm sm:text-base font-extrabold text-fuchsia-800">7 S2</span>
-                            <span class="text-[10px] text-fuchsia-700 font-bold">7 Jam (Pink)</span>
+                        <button type="button" onclick="selectOTPreset(7, '7 S2')" ondblclick="quickSaveOT(7, '7 S2')" class="ot-preset-btn ot-c-7s2 p-3 rounded-xl border-2 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S2">
+                            <span class="text-sm sm:text-base font-extrabold">7 S2</span>
+                            <span class="text-[10px] font-bold opacity-80">7 Jam (Abu-abu)</span>
                         </button>
-                        <button type="button" onclick="selectOTPreset(7, '7 S3')" class="ot-preset-btn p-3 rounded-xl border-2 border-rose-400 bg-rose-100 hover:bg-rose-200 text-rose-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S3">
-                            <span class="text-sm sm:text-base font-extrabold text-rose-800">7 S3</span>
-                            <span class="text-[10px] text-rose-700 font-bold">7 Jam (Merah)</span>
+                        <button type="button" onclick="selectOTPreset(7, '7 S3')" ondblclick="quickSaveOT(7, '7 S3')" class="ot-preset-btn ot-c-7s3 p-3 rounded-xl border-2 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="7 S3">
+                            <span class="text-sm sm:text-base font-extrabold">7 S3</span>
+                            <span class="text-[10px] font-bold opacity-80">7 Jam (Ungu)</span>
                         </button>
-                        <button type="button" onclick="selectOTPreset(1, '1')" class="ot-preset-btn p-3 rounded-xl border-2 border-sky-400 bg-sky-100 hover:bg-sky-200 text-sky-950 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="1">
-                            <span class="text-sm sm:text-base font-extrabold text-sky-800">1</span>
-                            <span class="text-[10px] text-sky-700 font-bold">1 Jam (Biru)</span>
+                        <button type="button" onclick="selectOTPreset(1, '1')" ondblclick="quickSaveOT(1, '1')" class="ot-preset-btn ot-c-1 p-3 rounded-xl border-2 transition flex flex-col items-center justify-center gap-0.5 shadow-sm active:scale-95" data-preset="1">
+                            <span class="text-sm sm:text-base font-extrabold">1</span>
+                            <span class="text-[10px] font-bold opacity-80">1 Jam (Pink)</span>
                         </button>
                     </div>
 
+                    <p class="mt-2.5 text-center text-[11px] text-slate-400"><i class="fa-regular fa-hand-pointer mr-1"></i>Klik 2x pada pilihan untuk langsung menyimpan</p>
+
                     <div class="mt-3 text-center">
-                        <button type="button" onclick="selectOTPreset(0, '')" class="text-xs text-rose-600 hover:text-rose-800 hover:underline font-semibold transition">
+                        <button type="button" onclick="selectOTPreset(0, '')" ondblclick="quickSaveOT(0, '')" class="text-xs text-rose-600 hover:text-rose-800 hover:underline font-semibold transition">
                             <i class="fa-solid fa-eraser mr-1"></i> Hapus / Kosongkan Jam OT
                         </button>
                     </div>
@@ -335,10 +354,33 @@
                 loadDataFromCloud(false);
             }, POLL_INTERVAL_MS);
 
+            setupColumnHighlight();
+
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden && pendingSaves === 0) loadDataFromCloud(false);
             });
         });
+
+        // Highlight kolom tanggal saat kursor di atas sel (baris di-highlight lewat CSS)
+        function setupColumnHighlight() {
+            const tc = document.getElementById('tablesContainer');
+            let hlTable = null, hlCol = null;
+            const clear = () => {
+                if (hlTable) hlTable.querySelectorAll('.col-hl').forEach(el => el.classList.remove('col-hl'));
+                hlTable = null; hlCol = null;
+            };
+            tc.addEventListener('mouseover', e => {
+                const cell = e.target.closest('td[data-col]');
+                const table = cell ? cell.closest('table') : null;
+                const col = cell ? cell.dataset.col : null;
+                if (table === hlTable && col === hlCol) return;
+                clear();
+                if (!cell) return;
+                table.querySelectorAll(`[data-col="${col}"]`).forEach(el => el.classList.add('col-hl'));
+                hlTable = table; hlCol = col;
+            });
+            tc.addEventListener('mouseleave', clear);
+        }
 
         // =====================================================
         // CLOUD SYNC
@@ -454,12 +496,12 @@
 
         function getOTBadgeClass(note) {
             switch (note) {
-                case '3 Awal':  return 'bg-emerald-200 text-emerald-900 border-emerald-400 font-bold';
-                case '3 Akhir': return 'bg-amber-200 text-amber-900 border-amber-400 font-bold';
-                case '7 S1':    return 'bg-indigo-200 text-indigo-900 border-indigo-400 font-bold';
-                case '7 S2':    return 'bg-fuchsia-200 text-fuchsia-900 border-fuchsia-400 font-bold';
-                case '7 S3':    return 'bg-rose-200 text-rose-900 border-rose-400 font-bold';
-                case '1':       return 'bg-sky-200 text-sky-900 border-sky-400 font-bold';
+                case '3 Awal': return 'ot-c-3awal font-bold';
+                case '3 Akhir': return 'ot-c-3akhir font-bold';
+                case '7 S1': return 'ot-c-7s1 font-bold';
+                case '7 S2': return 'ot-c-7s2 font-bold';
+                case '7 S3': return 'ot-c-7s3 font-bold';
+                case '1': return 'ot-c-1 font-bold';
                 default:        return 'bg-slate-100 text-slate-700 border-slate-200';
             }
         }
@@ -517,7 +559,7 @@
         function changePeriode(pId) {
             currentPeriodeId = pId;
             setupCurrentPeriodeDates();
-            renderTables();
+            renderTables(true);
             showToast('Periode berhasil diubah');
         }
 
@@ -558,7 +600,7 @@
         // =====================================================
         // KARYAWAN
         // =====================================================
-        function openEmployeeModal(empId = null) {
+        function openEmployeeModal(empId = null, presetCategory = null) {
             document.getElementById('empForm').reset();
 
             if (empId) {
@@ -574,6 +616,14 @@
             } else {
                 document.getElementById('empModalTitle').textContent = 'Tambah Karyawan Baru';
                 document.getElementById('empIdInput').value = '';
+                if (presetCategory) {
+                    document.getElementById('empCategoryInput').value = presetCategory;
+                    // ikuti filter yang sedang aktif supaya input lebih cepat
+                    const sf = document.getElementById('shiftFilter').value;
+                    const gf = document.getElementById('groupFilter').value;
+                    if (sf !== 'ALL') document.getElementById('empShiftInput').value = sf;
+                    if (gf !== 'ALL') document.getElementById('empGroupInput').value = gf;
+                }
             }
 
             document.getElementById('empModal').classList.remove('hidden');
@@ -634,6 +684,12 @@
             });
         }
 
+        // Klik 2x pada pilihan = pilih + langsung simpan (tombol Simpan Data tetap ada)
+        function quickSaveOT(hours, label) {
+            selectOTPreset(hours, label);
+            saveOT({ preventDefault() {} });
+        }
+
         function openOTModal(empId, dateIdx) {
             const emp = employees.find(e => e.id === empId);
             const dateObj = dates[dateIdx];
@@ -689,8 +745,12 @@
             renderTables();
         }
 
-        function renderTables() {
+        function renderTables(resetScroll = false) {
             const container = document.getElementById('tablesContainer');
+
+            // Simpan posisi scroll horizontal tiap tabel + scroll halaman sebelum dirender ulang
+            const prevScrolls = resetScroll ? [] : Array.from(container.querySelectorAll('.table-scroll')).map(el => el.scrollLeft);
+            const prevPageY = window.scrollY;
             container.innerHTML = '';
 
             const shiftVal = document.getElementById('shiftFilter').value;
@@ -713,6 +773,10 @@
 
                 container.appendChild(createCategoryTable(cat, filtered));
             });
+
+            // Kembalikan posisi scroll
+            container.querySelectorAll('.table-scroll').forEach((el, i) => { el.scrollLeft = prevScrolls[i] || 0; });
+            window.scrollTo(window.scrollX, prevPageY);
         }
 
         function createCategoryTable(category, catEmployees) {
@@ -732,7 +796,7 @@
             let datesHeaderHtml = '';
             dates.forEach(d => {
                 datesHeaderHtml += `
-                    <th class="p-2 sm:p-2.5 text-center text-xs font-bold min-w-[70px] border-b border-r border-slate-200 ${d.weekend ? 'bg-slate-500 text-white' : 'bg-slate-100 text-slate-700'}">
+                    <th data-col="${d.index}" class="p-2 sm:p-2.5 text-center text-xs font-bold min-w-[70px] border-b border-r border-slate-200 ${d.weekend ? 'bg-slate-500 text-white' : 'bg-slate-100 text-slate-700'}">
                         <div class="text-[10px] font-semibold uppercase ${d.weekend ? 'text-slate-200' : 'text-slate-400'}">${d.day}</div>
                         <div>${d.label}</div>
                     </th>`;
@@ -753,20 +817,20 @@
                         const cellData = (emp.otData && emp.otData[currentPeriodeId]) ? emp.otData[currentPeriodeId][d.index] : null;
                         const note = cellData ? (cellData.note || cellData.hours) : '';
                         const emptyClass = d.weekend
-                            ? 'bg-transparent text-slate-400 hover:bg-slate-400 hover:text-white'
-                            : 'bg-transparent text-slate-300 hover:bg-slate-100 hover:text-slate-600';
+                            ? 'bg-slate-200 border-slate-400 text-slate-500 font-semibold hover:bg-white hover:border-emerald-500 hover:text-emerald-600'
+                            : 'bg-white border-slate-300 text-slate-400 font-semibold shadow-sm hover:bg-emerald-50 hover:border-emerald-500 hover:text-emerald-600';
                         const badgeClass = note ? getOTBadgeClass(String(note)) : emptyClass;
 
                         otCells += `
-                            <td onclick="openOTModal(${emp.id}, ${d.index})" class="p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition ${d.weekend ? 'bg-slate-300' : ''}">
+                            <td data-col="${d.index}" onclick="openOTModal(${emp.id}, ${d.index})" class="p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition ${d.weekend ? 'bg-slate-300' : ''}">
                                 <div class="w-full py-1.5 px-1 rounded-lg text-xs transition border ${badgeClass}">${note ? escapeHtml(note) : '+'}</div>
                             </td>`;
                     });
 
                     rowsHtml += `
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="p-3 text-center text-xs font-semibold text-slate-400 border-b border-r border-slate-200 sticky-col-1 bg-white">${idx + 1}</td>
-                            <td class="p-3 border-b border-r border-slate-200 sticky-col-2 bg-white">
+                        <tr class="transition ${idx % 2 ? 'bg-slate-50' : 'bg-white'}">
+                            <td class="p-3 text-center text-xs font-semibold text-slate-400 border-b border-r border-slate-200 sticky-col-1 ${idx % 2 ? 'bg-slate-50' : 'bg-white'}">${idx + 1}</td>
+                            <td class="p-3 border-b border-r border-slate-200 sticky-col-2 ${idx % 2 ? 'bg-slate-50' : 'bg-white'}">
                                 <div class="flex items-center justify-between group">
                                     <span class="text-xs sm:text-sm font-bold text-slate-800">${escapeHtml(emp.name)}</span>
                                     <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition">
@@ -784,7 +848,7 @@
             let dayTotalsHtml = '';
             dayTotals.forEach((tot, i) => {
                 const wk = dates[i].weekend;
-                dayTotalsHtml += `<td class="p-2.5 text-center text-xs font-bold text-slate-800 border-t-2 border-slate-300 border-r border-slate-200 ${wk ? 'bg-slate-300' : 'bg-slate-100'}">${tot}</td>`;
+                dayTotalsHtml += `<td data-col="${i}" class="p-2.5 text-center text-xs font-bold text-slate-800 border-t-2 border-slate-300 border-r border-slate-200 ${wk ? 'bg-slate-300' : 'bg-slate-100'}">${tot}</td>`;
             });
 
             wrapper.innerHTML = `
@@ -793,10 +857,15 @@
                         <span class="w-3 h-3 rounded-full bg-${category.color}-400"></span>
                         <h2 class="font-bold text-sm sm:text-base tracking-wide uppercase">${category.title}</h2>
                     </div>
-                    <span class="text-xs font-semibold px-3 py-1 bg-white/10 rounded-full">Total: ${grandTotalCategory} Jam</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold px-3 py-1 bg-white/10 rounded-full">Total: ${grandTotalCategory} Jam</span>
+                        <button onclick="openEmployeeModal(null, '${category.key}')" class="px-3 py-1 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-plus"></i> Tambah Nama
+                        </button>
+                    </div>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto table-scroll">
                     <table class="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr class="bg-slate-100">
