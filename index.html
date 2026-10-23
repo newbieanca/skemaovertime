@@ -31,6 +31,13 @@
         .ot-c-7s3    { background:#E3CEEE; border-color:#B58FCE; color:#4B2866; }
         .ot-c-1      { background:#F9CDD8; border-color:#E395AA; color:#76243D; }
 
+        /* Ruang scroll ekstra di kanan: minggu terakhir bisa menempel ke kolom freeze (untuk screenshot) */
+        .spacer-col { width: var(--spacer, 0px); min-width: var(--spacer, 0px); max-width: var(--spacer, 0px); padding: 0 !important; border: 0 !important; background: #fff; box-shadow: none !important; }
+
+        /* Sembunyikan total jam OT */
+        .hide-totals .sticky-col-3, .hide-totals .total-row, .hide-totals .total-chip { display: none !important; }
+        .hide-totals .sticky-col-2 { border-right: 2px solid #94a3b8 !important; }
+
         .week-start { border-left: 3px solid #64748b !important; }
 
         .ot-preset-btn { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
@@ -129,10 +136,14 @@
                     <input type="text" id="searchInput" oninput="renderTables()" placeholder="Cari nama karyawan..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
                 </div>
 
-                <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
                     <button onclick="toggleAutoSort()" id="autoSortBtn" class="px-3.5 py-2 bg-emerald-50 border-emerald-300 text-slate-700 hover:bg-slate-200 border rounded-xl text-xs font-medium transition flex items-center gap-2">
                         <i class="fa-solid fa-arrow-down-wide-short text-emerald-600"></i>
                         <span>Urutkan Total Jam: <strong id="sortStatusText">Aktif</strong></span>
+                    </button>
+                    <button onclick="toggleTotals()" id="totalToggleBtn" class="px-3.5 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 rounded-xl text-xs font-medium transition flex items-center gap-2">
+                        <i id="totalToggleIcon" class="fa-solid fa-eye text-emerald-600"></i>
+                        <span>Total Jam: <strong id="totalToggleText">Tampil</strong></span>
                     </button>
                     <button onclick="openEmployeeModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-user-plus"></i> Tambah Karyawan
@@ -411,6 +422,7 @@
         let currentPeriodeId = null;
         let dates = [];
         let autoSortEnabled = true;
+        let totalsHidden = false;
 
         let serverVersion = 0;   // versi data terakhir dari server
         let pendingSaves = 0;    // jumlah penyimpanan yang sedang berjalan
@@ -432,6 +444,9 @@
             }, POLL_INTERVAL_MS);
 
             setupColumnHighlight();
+            window.addEventListener('resize', updateScrollSpacers);
+            window.addEventListener('load', updateScrollSpacers);
+            if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateScrollSpacers);
 
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden && pendingSaves === 0) loadDataFromCloud(false);
@@ -912,6 +927,35 @@
             renderTables();
         }
 
+        // Hitung ruang kosong di kanan tabel agar awal minggu terakhir bisa di-scroll sampai menempel ke kolom freeze
+        function updateScrollSpacers() {
+            let lastStart = 0;
+            dates.forEach(d => { if (d.weekStart) lastStart = d.index; });
+
+            document.querySelectorAll('#tablesContainer .table-scroll').forEach(sc => {
+                const table = sc.querySelector('table');
+                if (!table) return;
+                table.style.setProperty('--spacer', '0px');
+
+                const first = table.querySelector('tr.date-row th[data-col="0"]');
+                const last = table.querySelector(`tr.date-row th[data-col="${lastStart}"]`);
+                if (!first || !last) return;
+
+                const need = (last.offsetLeft - first.offsetLeft) + sc.clientWidth - table.offsetWidth;
+                table.style.setProperty('--spacer', Math.max(0, Math.ceil(need)) + 'px');
+            });
+        }
+
+        function toggleTotals() {
+            totalsHidden = !totalsHidden;
+            document.getElementById('tablesContainer').classList.toggle('hide-totals', totalsHidden);
+            document.getElementById('totalToggleText').textContent = totalsHidden ? 'Sembunyi' : 'Tampil';
+            document.getElementById('totalToggleIcon').className = totalsHidden
+                ? 'fa-solid fa-eye-slash text-rose-500'
+                : 'fa-solid fa-eye text-emerald-600';
+            updateScrollSpacers();
+        }
+
         function renderTables(resetScroll = false) {
             const container = document.getElementById('tablesContainer');
 
@@ -940,6 +984,8 @@
 
                 container.appendChild(createCategoryTable(cat, filtered));
             });
+
+            updateScrollSpacers();
 
             // Kembalikan posisi scroll
             container.querySelectorAll('.table-scroll').forEach((el, i) => { el.scrollLeft = prevScrolls[i] || 0; });
@@ -973,7 +1019,7 @@
             if (catEmployees.length === 0) {
                 rowsHtml = `
                     <tr>
-                        <td colspan="${dates.length + 3}" class="p-8 text-center text-xs sm:text-sm text-slate-400 font-medium">
+                        <td colspan="${dates.length + 4}" class="p-8 text-center text-xs sm:text-sm text-slate-400 font-medium">
                             Tidak ada data karyawan ditemukan.
                         </td>
                     </tr>`;
@@ -1007,7 +1053,7 @@
                                 </div>
                             </td>
                             <td class="sticky-col-3 p-3 text-center text-xs sm:text-sm font-black text-slate-800 border-b border-slate-200 ${idx % 2 ? 'bg-slate-100' : 'bg-slate-50'}">${getEmpTotal(emp)}</td>
-                            ${otCells}
+                            ${otCells}<td class="spacer-col"></td>
                         </tr>`;
                 });
             }
@@ -1044,12 +1090,12 @@
                 <tr class="bg-white">
                     <th colspan="2" class="p-2 text-right text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-r border-slate-200 sticky-span2 bg-slate-100">Grup / Shift</th>
                     <th class="sticky-col-3 border-b border-slate-200 bg-slate-100"></th>
-                    ${codeCells}
+                    ${codeCells}<th class="spacer-col"></th>
                 </tr>
                 <tr class="bg-white">
                     <th colspan="2" class="p-2 text-right align-top text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-r border-slate-200 sticky-span2 bg-slate-100">Leader</th>
                     <th class="sticky-col-3 border-b border-slate-200 bg-slate-100"></th>
-                    ${leaderCells}
+                    ${leaderCells}<th class="spacer-col"></th>
                 </tr>`;
 
             wrapper.innerHTML = `
@@ -1059,7 +1105,7 @@
                         <h2 class="font-bold text-sm sm:text-base tracking-wide uppercase">${category.title}</h2>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-semibold px-3 py-1 bg-white/10 rounded-full">Total: ${grandTotalCategory} Jam</span>
+                        <span class="total-chip text-xs font-semibold px-3 py-1 bg-white/10 rounded-full">Total: ${grandTotalCategory} Jam</span>
                         <button onclick="openEmployeeModal(null, '${category.key}')" class="px-3 py-1 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full text-xs font-semibold transition flex items-center gap-1.5">
                             <i class="fa-solid fa-user-plus"></i> Tambah Nama
                         </button>
@@ -1068,19 +1114,19 @@
 
                 <div class="overflow-x-auto table-scroll">
                     <table class="tbl-sep w-full text-left min-w-[800px]">
-                        <thead>${infoRowsHtml}<tr class="bg-slate-100">
+                        <thead>${infoRowsHtml}<tr class="date-row bg-slate-100">
                                 <th class="p-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-r border-slate-200 sticky-col-1 bg-slate-100">NO</th>
                                 <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-r border-slate-200 sticky-col-2 bg-slate-100">NAMA KARYAWAN</th>
                                 <th class="sticky-col-3 p-3 text-center text-[10px] font-bold text-slate-700 uppercase tracking-wider border-b border-slate-200 bg-slate-200">TOTAL</th>
-                                ${datesHeaderHtml}
+                                ${datesHeaderHtml}<th class="spacer-col"></th>
                             </tr>
                         </thead>
                         <tbody>${rowsHtml}</tbody>
                         <tfoot>
-                            <tr>
+                            <tr class="total-row">
                                 <td colspan="2" class="p-3 text-right text-xs font-bold text-slate-700 uppercase tracking-wider border-t-2 border-slate-300 border-r border-slate-200 sticky-span2 bg-slate-100">TOTAL JAM OVERTIME</td>
                                 <td class="sticky-col-3 p-3 text-center text-sm font-black text-emerald-700 bg-slate-200 border-t-2 border-b border-slate-300">${grandTotalCategory}</td>
-                                ${dayTotalsHtml}
+                                ${dayTotalsHtml}<td class="spacer-col"></td>
                             </tr>
                         </tfoot>
                     </table>
