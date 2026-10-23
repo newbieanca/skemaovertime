@@ -24,6 +24,8 @@
         .ot-c-7s3    { background:#E3CEEE; border-color:#B58FCE; color:#4B2866; }
         .ot-c-1      { background:#F9CDD8; border-color:#E395AA; color:#76243D; }
 
+        .week-start { border-left: 3px solid #64748b !important; }
+
         .ot-preset-btn { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
         .ot-preset-btn:hover { filter: brightness(0.95); }
         button, [onclick] { touch-action: manipulation; }
@@ -294,6 +296,74 @@
         </div>
     </div>
 
+    <!-- Modal Info Hari (Grup / Shift / Leader) -->
+    <div id="headerModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-slate-100">
+            <div class="bg-slate-800 text-white p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-users-gear text-emerald-400"></i>
+                    <h3 class="font-bold text-base sm:text-lg">Atur Grup, Shift &amp; Leader</h3>
+                </div>
+                <button onclick="closeHeaderModal()" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
+            </div>
+            <form id="headerForm" onsubmit="saveHeader(event)" class="p-5 space-y-4">
+                <input type="hidden" id="hdrDayIndex">
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal</label>
+                    <input type="text" id="hdrDateLabel" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Grup</label>
+                        <select id="hdrGroup" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                            <option value="">- Kosong -</option>
+                            <option value="A">Grup A</option>
+                            <option value="B">Grup B</option>
+                            <option value="C">Grup C</option>
+                            <option value="D">Grup D</option>
+                            <option value="E">Grup E</option>
+                            <option value="FL">Grup FL</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Shift</label>
+                        <select id="hdrShift" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                            <option value="">- Kosong -</option>
+                            <option value="Shift 1">Shift 1</option>
+                            <option value="Shift 2">Shift 2</option>
+                            <option value="Shift 3">Shift 3</option>
+                            <option value="NS">NS</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Daftar Leader <span class="normal-case font-medium text-slate-400">(satu nama per baris)</span></label>
+                    <textarea id="hdrLeaders" rows="4" placeholder="Contoh:&#10;Bejo&#10;Afiat&#10;Rival" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none"></textarea>
+                    <div class="mt-2">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tambah cepat dari daftar leader</div>
+                        <div id="hdrLeaderChips" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto"></div>
+                    </div>
+                </div>
+
+                <label class="flex items-start gap-2 text-xs text-slate-600 font-medium cursor-pointer select-none">
+                    <input type="checkbox" id="hdrApplyNext" class="mt-0.5 accent-emerald-600">
+                    <span>Terapkan juga ke hari yang sama di minggu-minggu berikutnya dalam periode ini</span>
+                </label>
+
+                <div class="flex justify-between items-center gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="clearHeader()" class="text-xs text-rose-600 hover:text-rose-800 hover:underline font-semibold transition"><i class="fa-solid fa-eraser mr-1"></i>Kosongkan</button>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="closeHeaderModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-xl text-xs sm:text-sm font-semibold hover:bg-slate-50 transition">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition shadow-md">Simpan Data</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <footer class="px-3 py-6 text-center text-xs text-slate-500">powered by NWBC</footer>
 
     <script>
@@ -551,6 +621,7 @@
                     day: daysIndo[d.getDay()],
                     label: `${d.getDate()}/${d.getMonth() + 1}`,
                     weekend: d.getDay() === 0 || d.getDay() === 6,
+                    weekStart: d.getDay() === 1 && i > 0,
                     fullDate: toLocalISO(d)
                 });
             }
@@ -669,6 +740,95 @@
                 showToast('Karyawan berhasil dihapus');
                 callApi({ action: 'delete_employee', empId });
             }
+        }
+
+        // =====================================================
+        // INFO HARI: GRUP / SHIFT / LEADER (per tanggal, tersimpan di periode)
+        // =====================================================
+        function headerCode(h) {
+            if (!h) return '';
+            const sh = (h.shift || '').replace('Shift ', '');
+            if (!h.group && !sh) return '';
+            return (h.group || '') + (sh === 'NS' ? '-NS' : sh);
+        }
+
+        function shortName(name) {
+            const parts = name.trim().split(/\s+/);
+            let w = parts[0].length >= 3 ? parts[0] : parts.join('');
+            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+        }
+
+        function openHeaderModal(dayIdx) {
+            const periode = periodes.find(p => p.id === currentPeriodeId);
+            const d = dates[dayIdx];
+            if (!periode || !d) return;
+            const h = (periode.headerData || {})[dayIdx] || {};
+
+            document.getElementById('hdrDayIndex').value = dayIdx;
+            document.getElementById('hdrDateLabel').value = `${d.label} (${d.day})`;
+            document.getElementById('hdrGroup').value = h.group || '';
+            document.getElementById('hdrShift').value = h.shift || '';
+            document.getElementById('hdrLeaders').value = h.leaders || '';
+            document.getElementById('hdrApplyNext').checked = false;
+
+            const leaders = employees.filter(e => e.category === 'LEADER').sort((a, b) => a.name.localeCompare(b.name));
+            document.getElementById('hdrLeaderChips').innerHTML = leaders.length
+                ? leaders.map(e => `<button type="button" onclick="addLeaderChip(${e.id})" title="${escapeHtml(e.name)}" class="px-2 py-1 rounded-full border border-slate-300 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-400 text-[11px] font-semibold text-slate-600 transition">${escapeHtml(shortName(e.name))}</button>`).join('')
+                : '<span class="text-[11px] text-slate-400">Belum ada karyawan kategori Leader.</span>';
+
+            document.getElementById('headerModal').classList.remove('hidden');
+            document.getElementById('headerModal').classList.add('flex');
+        }
+
+        function closeHeaderModal() {
+            document.getElementById('headerModal').classList.add('hidden');
+            document.getElementById('headerModal').classList.remove('flex');
+        }
+
+        function addLeaderChip(empId) {
+            const emp = employees.find(e => e.id === empId);
+            if (!emp) return;
+            const ta = document.getElementById('hdrLeaders');
+            const lines = ta.value.split('\n').map(x => x.trim()).filter(Boolean);
+            const nm = shortName(emp.name);
+            if (!lines.includes(nm)) lines.push(nm);
+            ta.value = lines.join('\n');
+        }
+
+        function clearHeader() {
+            document.getElementById('hdrGroup').value = '';
+            document.getElementById('hdrShift').value = '';
+            document.getElementById('hdrLeaders').value = '';
+            saveHeader({ preventDefault() {} });
+        }
+
+        function saveHeader(e) {
+            e.preventDefault();
+            const periode = periodes.find(p => p.id === currentPeriodeId);
+            if (!periode) { closeHeaderModal(); return; }
+
+            const idx = parseInt(document.getElementById('hdrDayIndex').value);
+            const group = document.getElementById('hdrGroup').value;
+            const shift = document.getElementById('hdrShift').value;
+            const leaders = document.getElementById('hdrLeaders').value.split('\n').map(x => x.trim()).filter(Boolean).join('\n');
+            const applyNext = document.getElementById('hdrApplyNext').checked;
+
+            const days = [idx];
+            if (applyNext) for (let i = idx + 7; i < dates.length; i += 7) days.push(i);
+
+            const empty = !group && !shift && !leaders;
+            const header = empty ? null : { group, shift, leaders };
+
+            if (!periode.headerData) periode.headerData = {};
+            days.forEach(i => {
+                if (empty) delete periode.headerData[i];
+                else periode.headerData[i] = { ...header };
+            });
+
+            renderTables();
+            closeHeaderModal();
+            showToast('Info grup/shift/leader diperbarui');
+            callApi({ action: 'set_header', periodeId: currentPeriodeId, days, header });
         }
 
         // =====================================================
@@ -796,7 +956,7 @@
             let datesHeaderHtml = '';
             dates.forEach(d => {
                 datesHeaderHtml += `
-                    <th data-col="${d.index}" class="p-2 sm:p-2.5 text-center text-xs font-bold min-w-[70px] border-b border-r border-slate-200 ${d.weekend ? 'bg-slate-500 text-white' : 'bg-slate-100 text-slate-700'}">
+                    <th data-col="${d.index}" class="${d.weekStart ? 'week-start ' : ''}p-2 sm:p-2.5 text-center text-xs font-bold min-w-[70px] border-b border-r border-slate-200 ${d.weekend ? 'bg-slate-500 text-white' : 'bg-slate-100 text-slate-700'}">
                         <div class="text-[10px] font-semibold uppercase ${d.weekend ? 'text-slate-200' : 'text-slate-400'}">${d.day}</div>
                         <div>${d.label}</div>
                     </th>`;
@@ -822,7 +982,7 @@
                         const badgeClass = note ? getOTBadgeClass(String(note)) : emptyClass;
 
                         otCells += `
-                            <td data-col="${d.index}" onclick="openOTModal(${emp.id}, ${d.index})" class="p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition ${d.weekend ? 'bg-slate-300' : ''}">
+                            <td data-col="${d.index}" onclick="openOTModal(${emp.id}, ${d.index})" class="p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition ${d.weekend ? 'bg-slate-300' : ''} ${d.weekStart ? 'week-start' : ''}">
                                 <div class="w-full py-1.5 px-1 rounded-lg text-xs transition border ${badgeClass}">${note ? escapeHtml(note) : '+'}</div>
                             </td>`;
                     });
@@ -848,8 +1008,42 @@
             let dayTotalsHtml = '';
             dayTotals.forEach((tot, i) => {
                 const wk = dates[i].weekend;
-                dayTotalsHtml += `<td data-col="${i}" class="p-2.5 text-center text-xs font-bold text-slate-800 border-t-2 border-slate-300 border-r border-slate-200 ${wk ? 'bg-slate-300' : 'bg-slate-100'}">${tot}</td>`;
+                dayTotalsHtml += `<td data-col="${i}" class="p-2.5 text-center text-xs font-bold text-slate-800 border-t-2 border-slate-300 border-r border-slate-200 ${wk ? 'bg-slate-300' : 'bg-slate-100'} ${dates[i].weekStart ? 'week-start' : ''}">${tot}</td>`;
             });
+
+            // Baris info di atas tanggal: Grup/Shift dan daftar Leader (per hari, diatur per periode)
+            const periodeObj = periodes.find(p => p.id === currentPeriodeId);
+            const hd = (periodeObj && periodeObj.headerData) || {};
+            let codeCells = '';
+            let leaderCells = '';
+            dates.forEach(d => {
+                const h = hd[d.index];
+                const code = headerCode(h);
+                const bg = d.weekend ? 'bg-slate-300' : 'bg-white';
+                const ws = d.weekStart ? 'week-start' : '';
+                codeCells += `
+                    <th data-col="${d.index}" onclick="openHeaderModal(${d.index})" title="Klik untuk atur grup, shift & leader" class="${ws} p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition hover:bg-emerald-50 ${bg}">
+                        ${code
+                            ? `<span class="text-base sm:text-lg font-extrabold text-slate-800 leading-none">${escapeHtml(code)}</span>`
+                            : `<span class="text-[10px] font-semibold text-slate-300">+ atur</span>`}
+                    </th>`;
+                const names = h && h.leaders ? h.leaders.split('\n').filter(Boolean) : [];
+                leaderCells += `
+                    <th data-col="${d.index}" onclick="openHeaderModal(${d.index})" title="Klik untuk atur grup, shift & leader" class="${ws} px-1 py-1.5 align-top text-center border-b border-r border-slate-200 cursor-pointer transition hover:bg-emerald-50 ${bg}">
+                        <div class="text-[10px] leading-tight font-semibold text-slate-600 min-h-[2.4rem]">${names.length ? names.map(n => `<div>${escapeHtml(n)}</div>`).join('') : '<span class="text-slate-300">-</span>'}</div>
+                    </th>`;
+            });
+            const infoRowsHtml = `
+                <tr class="bg-white">
+                    <th colspan="2" class="p-2 text-right text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-r border-slate-200 sticky-col-1 bg-slate-100">Grup / Shift</th>
+                    ${codeCells}
+                    <th class="border-b border-slate-200 bg-slate-100"></th>
+                </tr>
+                <tr class="bg-white">
+                    <th colspan="2" class="p-2 text-right align-top text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-r border-slate-200 sticky-col-1 bg-slate-100">Leader</th>
+                    ${leaderCells}
+                    <th class="border-b border-slate-200 bg-slate-100"></th>
+                </tr>`;
 
             wrapper.innerHTML = `
                 <div class="bg-slate-800 text-white p-4 flex items-center justify-between">
@@ -867,8 +1061,7 @@
 
                 <div class="overflow-x-auto table-scroll">
                     <table class="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr class="bg-slate-100">
+                        <thead>${infoRowsHtml}<tr class="bg-slate-100">
                                 <th class="p-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider w-12 border-b border-r border-slate-200 sticky-col-1 bg-slate-100">NO</th>
                                 <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[200px] border-b border-r border-slate-200 sticky-col-2 bg-slate-100">NAMA KARYAWAN</th>
                                 ${datesHeaderHtml}
@@ -897,6 +1090,9 @@
             const q = v => `"${String(v).replace(/"/g, '""')}"`;
 
             let csv = `REKAP OVERTIME KARYAWAN - ${periode ? periode.name : ''}\n\n`;
+            const hdExp = (periode && periode.headerData) || {};
+            csv += ['', '', '', '', 'GRUP/SHIFT', ...dates.map(d => headerCode(hdExp[d.index]))].map(q).join(',') + '\n';
+            csv += ['', '', '', '', 'LEADER', ...dates.map(d => ((hdExp[d.index] || {}).leaders || '').replace(/\n/g, ', '))].map(q).join(',') + '\n';
             csv += ['No', 'Nama Karyawan', 'Kategori', 'Shift', 'Grup', ...dates.map(d => `${d.day} (${d.label})`), 'Total Jam'].map(q).join(',') + '\n';
 
             employees.forEach((emp, idx) => {
