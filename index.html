@@ -508,6 +508,7 @@
                     index: i,
                     day: daysIndo[d.getDay()],
                     label: `${d.getDate()}/${d.getMonth() + 1}`,
+                    weekend: d.getDay() === 0 || d.getDay() === 6,
                     fullDate: toLocalISO(d)
                 });
             }
@@ -731,8 +732,8 @@
             let datesHeaderHtml = '';
             dates.forEach(d => {
                 datesHeaderHtml += `
-                    <th class="p-2 sm:p-2.5 text-center text-xs font-bold text-slate-700 min-w-[70px] border-b border-r border-slate-200 bg-slate-100">
-                        <div class="text-[10px] text-slate-400 font-semibold uppercase">${d.day}</div>
+                    <th class="p-2 sm:p-2.5 text-center text-xs font-bold min-w-[70px] border-b border-r border-slate-200 ${d.weekend ? 'bg-slate-500 text-white' : 'bg-slate-100 text-slate-700'}">
+                        <div class="text-[10px] font-semibold uppercase ${d.weekend ? 'text-slate-200' : 'text-slate-400'}">${d.day}</div>
                         <div>${d.label}</div>
                     </th>`;
             });
@@ -751,10 +752,13 @@
                     dates.forEach(d => {
                         const cellData = (emp.otData && emp.otData[currentPeriodeId]) ? emp.otData[currentPeriodeId][d.index] : null;
                         const note = cellData ? (cellData.note || cellData.hours) : '';
-                        const badgeClass = note ? getOTBadgeClass(String(note)) : 'bg-transparent text-slate-300 hover:bg-slate-100 hover:text-slate-600';
+                        const emptyClass = d.weekend
+                            ? 'bg-transparent text-slate-400 hover:bg-slate-400 hover:text-white'
+                            : 'bg-transparent text-slate-300 hover:bg-slate-100 hover:text-slate-600';
+                        const badgeClass = note ? getOTBadgeClass(String(note)) : emptyClass;
 
                         otCells += `
-                            <td onclick="openOTModal(${emp.id}, ${d.index})" class="p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition">
+                            <td onclick="openOTModal(${emp.id}, ${d.index})" class="p-1.5 text-center border-b border-r border-slate-200 cursor-pointer transition ${d.weekend ? 'bg-slate-300' : ''}">
                                 <div class="w-full py-1.5 px-1 rounded-lg text-xs transition border ${badgeClass}">${note ? escapeHtml(note) : '+'}</div>
                             </td>`;
                     });
@@ -778,8 +782,9 @@
             }
 
             let dayTotalsHtml = '';
-            dayTotals.forEach(tot => {
-                dayTotalsHtml += `<td class="p-2.5 text-center text-xs font-bold text-slate-800 border-t-2 border-slate-300 border-r border-slate-200 bg-slate-100">${tot}</td>`;
+            dayTotals.forEach((tot, i) => {
+                const wk = dates[i].weekend;
+                dayTotalsHtml += `<td class="p-2.5 text-center text-xs font-bold text-slate-800 border-t-2 border-slate-300 border-r border-slate-200 ${wk ? 'bg-slate-300' : 'bg-slate-100'}">${tot}</td>`;
             });
 
             wrapper.innerHTML = `
